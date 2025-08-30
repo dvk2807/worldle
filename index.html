@@ -8,6 +8,61 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div id="wrapper">
+        <div id="bar">
+            <div class="bar-buttons-wrapper" id="bar-buttons-wrapper-left">
+                <!-- Buttons here -->
+            </div>
+            <div id="title">WoRLdle</div>
+            <div class="bar-buttons-wrapper" id="bar-buttons-wrapper-right">
+                <!-- Buttons here -->
+                <div class="bar-button">&#x2B50;</div>
+            </div>
+        </div>
+        <div id="main">
+            <div id="left-panel-wrapper" class="panel-wrapper">
+                <div id="left-panel" class="panel">
+                    <div class="panel-button" onclick="Game.togglePanel('left')">|</div>
+                    <div id="left-panel-content" class="panel-content panel-enabled">
+                        <h2 class="text-center">Правила</h2>
+                        <hr>
+                        <ol>
+                            <li>Спробуйте вгадати загадане слово з <b>5-ти</b> літер за <b>6 спроб</b>.</li>
+                            <li>Кожна спроба має бути <b>існуючим</b> словом з 5-ти літер.</li>
+                            <li><b>Капітан</b> команди має озвучувати остаточні спроби.</li>
+                            <li>
+                                Після кожної спроби ви отримаєте таку інформацію про загадане слово:
+                                <ul>
+                                    <li>
+                                        <mark class="tile-green">Зелені літери</mark> зустрічаються в загаданому слові й <b>стоять на тому ж місті</b>, як і у вашій спробі.
+                                    </li>
+                                    <li>
+                                        <mark class="tile-yellow">Жовті літери</mark> зустрічаються в загаданому слові, але <b>стоять на іншому</b> місті, ніж у вашій спробі.
+                                    </li>
+                                    <li>
+                                        <mark class="tile-gray">Сірі літери</mark> <b>не зустрічаються</b> в загаданому слові.
+                                    </li>
+                                </ul>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+            <div id="board">
+                <!-- JS fills tiles here -->
+            </div>
+            <div id="right-panel-wrapper" class="panel-wrapper">
+                <div id="right-panel" class="panel">
+                    <div class="panel-button" onclick="Game.togglePanel('right')">|</div>
+                    <div id="right-panel-content" class="panel-content panel-enabled">
+                        <div id="keyboard">
+                            <!-- JS fills keys here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <script src="script.js"></script>
 </body>
 </html>
