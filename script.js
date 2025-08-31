@@ -100,25 +100,28 @@ Game.input = function(index){
 Game.enter = function(){
     if(Game.guess.length != Game.wordLength) return;
     
+    solution = Game.solution;
+
     colors = [];
     for(var i = 0; i < Game.wordLength; i++){
         colors[i] = "gray";
     }
-    locked_letters = [];
 
     // Check for green letters
     for(var i = 0; i < Game.wordLength; i++){
         if(Game.guess[i] == Game.solution[i]){
             colors[i] = "green";
-            locked_letters.push(Game.guess[i]);
+            solution = solution.replace(Game.guess[i], " ");
         }
     }
 
     // Check for yellow letters
     for(var i = 0; i < Game.wordLength; i++){
-        for(var j = 0; j < Game.wordLength; j++){
-            if((i == j) || (locked_letters.includes(Game.guess[i]))) continue;
-            if(Game.guess[i] == Game.solution[j]) colors[i] = "yellow";
+        if(colors[i] != "green"){
+            if(colors[i] != "green" && solution.includes(Game.guess[i])){
+                colors[i] = "yellow";
+                solution = solution.replace(Game.guess[i], " ");
+            }
         }
     }
 
