@@ -16,10 +16,19 @@
             <div id="title">WoRLdle</div>
             <div class="bar-buttons-wrapper" id="bar-buttons-wrapper-right">
                 <!-- Buttons here -->
-                <div class="bar-button">&#x2B50;</div>
+                <div class="bar-button" onclick="Game.toggleOverlay();">&#x2B50;</div>
             </div>
         </div>
         <div id="main">
+            <div id="overlay">
+                <div id="overlay-no-results" class="overlay-page-enabled">Результати будуть тут...</div>
+                <div id="overlay-results">
+                    <h2 class="results-slot"></h1>
+                    <ul>
+                        <li>Загадане слово: <b class="results-slot"></b></li>
+                    </ul>
+                </div>
+            </div>
             <div id="left-panel-wrapper" class="panel-wrapper">
                 <div id="left-panel" class="panel">
                     <div class="panel-button" onclick="Game.togglePanel('left')">|</div>
@@ -27,7 +36,7 @@
                         <h2 class="text-center">Правила</h2>
                         <hr>
                         <ol>
-                            <li>Спробуйте вгадати загадане слово з <b>5-ти</b> літер за <b>6 спроб</b>.</li>
+                            <li>Спробуйте відгадати загадане слово з <b>5-ти</b> літер за <b>6 спроб</b>.</li>
                             <li>Кожна спроба має бути <b>існуючим</b> словом з 5-ти літер.</li>
                             <li><b>Капітан</b> команди має озвучувати остаточні спроби.</li>
                             <li>

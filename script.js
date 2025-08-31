@@ -10,7 +10,9 @@ Game.letters = "АБВГҐДЕЄЖЗИІЇЙКЛМНОПРСТУФХЦЧШЩЬЮ
 Game.guess = "";
 Game.guesses = [];
 
-Game.solution = ""
+Game.solution = "";
+
+Game.isOver = false;
 
 Game.setUpBoard = function(){
     Game.board.style.gridTemplateRows = `repeat(${Game.guessCount}, 1fr)`;
@@ -55,6 +57,18 @@ Game.togglePanel = function(side){
     panelContent.classList.toggle("panel-enabled");
 };
 
+Game.toggleOverlay = function(){
+    overlay = document.getElementById("overlay");
+    overlay.classList.toggle("overlay-enabled");
+};
+
+Game.toggleResults = function(){
+    noResults = document.getElementById("overlay-no-results");
+    results = document.getElementById("overlay-results");
+    noResults.classList.toggle("overlay-page-enabled");
+    results.classList.toggle("overlay-page-enabled");
+};
+
 Game.setTile = function(x, y, index){
     tile = document.getElementById(`tile-${y}-${x}`);
     if(index != -1) tile.innerHTML = Game.letters[index];
@@ -62,6 +76,7 @@ Game.setTile = function(x, y, index){
 };
 
 Game.input = function(index){
+    if(Game.isOver) return;
     x = Game.guess.length;
     y = Game.guesses.length;
     if(index == 34){
@@ -122,12 +137,34 @@ Game.enter = function(){
     }
 
     Game.guesses.push(Game.guess);
-    Game.guess = ""
+
+    if(Game.guess == Game.solution){
+        Game.endGame(true);
+        return;
+    }
+
+    Game.guess = "";
+
+    if(Game.guesses.length == 6) Game.endGame(false);
 };
 
 Game.pickSolution = function(){
     index = Math.floor(Math.random() * Dictionary.guess.length);
     Game.solution = Dictionary.guess[index];
+};
+
+Game.endGame = function(isWon){
+    console.log("end")
+    Game.isOver = true;
+    Game.toggleResults();
+    Game.toggleOverlay();
+
+    slots = document.getElementsByClassName("results-slot");
+    if(isWon){
+        strings = ["1 спробу", "2 спроби", " 3 спроби", "4 спроби", "5 спроб", "6 спроб"];
+        slots[0].innerHTML = `Ви відгадали слово за ${strings[Game.guesses.length - 1]}!`;
+    }else slots[0].innerHTML = `Ви не відгадали слово за 6 спроб...`;
+    slots[1].innerHTML = Game.solution;
 }
 
 Game.setUpBoard();
