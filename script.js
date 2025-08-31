@@ -154,7 +154,6 @@ Game.pickSolution = function(){
 };
 
 Game.endGame = function(isWon){
-    console.log("end")
     Game.isOver = true;
     Game.toggleResults();
     Game.toggleOverlay();
@@ -165,7 +164,20 @@ Game.endGame = function(isWon){
         slots[0].innerHTML = `Ви відгадали слово за ${strings[Game.guesses.length - 1]}!`;
     }else slots[0].innerHTML = `Ви не відгадали слово за 6 спроб...`;
     slots[1].innerHTML = Game.solution;
-}
+};
+
+Game.reset = function(){
+    Game.guess = "";
+    Game.guesses = [];
+    Game.isOver = false;
+    Game.pickSolution();
+
+    Game.board.innerHTML = "";
+    Game.keyboard.innerHTML = "";
+    Game.setUpBoard();
+    Game.setUpKeyboard();
+    Game.toggleResults();
+};
 
 Game.setUpBoard();
 Game.setUpKeyboard();
