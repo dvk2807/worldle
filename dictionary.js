@@ -1,5 +1,20 @@
 Dictionary = {};
 
+Dictionary.solution = [
+    "СИНУС",
+    "ТОЧКА",
+    "ГРАФИ",
+    "ПЛОЩА",
+    "ОБ'ЄМ",
+    "ФОТОН",
+    "АТОМИ",
+    "ТИСКИ",
+    "ХВИЛЯ",
+    "НАУКА",
+    "БАЙТИ",
+    "ЦИКЛИ",
+];
+
 Dictionary.guess = [
     "АБЗАЦ",
     "АБИЯК",
@@ -3963,3 +3978,5 @@ Dictionary.guess = [
     "ЯЧАТИ",
     "ЯЧНИЙ",
 ];
+
+Dictionary.guess = [...new Set([...Dictionary.solution, ...Dictionary.guess])];

@@ -149,8 +149,8 @@ Game.enter = function(){
 };
 
 Game.pickSolution = function(){
-    index = Math.floor(Math.random() * Dictionary.guess.length);
-    Game.solution = Dictionary.guess[index];
+    index = Math.floor(Math.random() * Dictionary.solution.length);
+    Game.solution = Dictionary.solution[index];
 };
 
 Game.endGame = function(isWon){
