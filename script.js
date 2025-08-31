@@ -10,6 +10,8 @@ Game.letters = "АБВГҐДЕЄЖЗИІЇЙКЛМНОПРСТУФХЦЧШЩЬЮ
 Game.guess = "";
 Game.guesses = [];
 
+Game.solution = ""
+
 Game.setUpBoard = function(){
     Game.board.style.gridTemplateRows = `repeat(${Game.guessCount}, 1fr)`;
     Game.board.style.gridTemplateColumns = `repeat(${Game.wordLength}, 1fr)`;
@@ -53,6 +55,12 @@ Game.togglePanel = function(side){
     panelContent.classList.toggle("panel-enabled");
 };
 
+Game.setTile = function(x, y, index){
+    tile = document.getElementById(`tile-${y}-${x}`);
+    if(index != -1) tile.innerHTML = Game.letters[index];
+    else tile.innerHTML = "";
+};
+
 Game.input = function(index){
     x = Game.guess.length;
     y = Game.guesses.length;
@@ -63,10 +71,8 @@ Game.input = function(index){
         Game.guess = Game.guess.slice(0, -1);
         Game.setTile(x - 1, y, -1)
     }else if(index == 35){
-        if(Game.guess.length != Game.wordLength) return;
         // Enter
-        Game.guesses.push(Game.guess)
-        Game.guess = ""
+        Game.enter();
     }else{
         // Type a letter
         if(Game.guess.length >= Game.wordLength) return;
@@ -76,11 +82,54 @@ Game.input = function(index){
     }
 };
 
-Game.setTile = function(x, y, index){
-    tile = document.getElementById(`tile-${y}-${x}`);
-    if(index != -1) tile.innerHTML = Game.letters[index];
-    else tile.innerHTML = "";
+Game.enter = function(){
+    if(Game.guess.length != Game.wordLength) return;
+    
+    colors = [];
+    for(var i = 0; i < Game.wordLength; i++){
+        colors[i] = "gray";
+    }
+    locked_letters = [];
+
+    // Check for green letters
+    for(var i = 0; i < Game.wordLength; i++){
+        if(Game.guess[i] == Game.solution[i]){
+            colors[i] = "green";
+            locked_letters.push(Game.guess[i]);
+        }
+    }
+
+    // Check for yellow letters
+    for(var i = 0; i < Game.wordLength; i++){
+        for(var j = 0; j < Game.wordLength; j++){
+            if((i == j) || (locked_letters.includes(Game.guess[i]))) continue;
+            if(Game.guess[i] == Game.solution[j]) colors[i] = "yellow";
+        }
+    }
+
+    for(var i = 0; i < Game.wordLength; i++){
+        tile = document.getElementById(`tile-${Game.guesses.length}-${i}`);
+        tile.classList.add(`tile-${colors[i]}`);
+
+        letterIndex = Game.letters.indexOf(Game.guess[i])
+        key = document.getElementById(`key-${letterIndex}`);
+        if(key.classList.contains("tile-green")) continue;
+        else{
+            key.className = "";
+            key.classList.add("key");
+            key.classList.add(`tile-${colors[i]}`);
+        }
+    }
+
+    Game.guesses.push(Game.guess);
+    Game.guess = ""
 };
+
+Game.pickSolution = function(){
+    index = Math.floor(Math.random() * Dictionary.guess.length);
+    Game.solution = Dictionary.guess[index];
+}
 
 Game.setUpBoard();
 Game.setUpKeyboard();
+Game.pickSolution();
