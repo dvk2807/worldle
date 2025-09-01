@@ -14,6 +14,8 @@ Game.solution = "";
 
 Game.isOver = false;
 
+Game.wordsLeft = [];
+
 Game.setUpBoard = function(){
     Game.board.style.gridTemplateRows = `repeat(${Game.guessCount}, 1fr)`;
     Game.board.style.gridTemplateColumns = `repeat(${Game.wordLength}, 1fr)`;
@@ -108,21 +110,39 @@ Game.enter = function(){
     }
 
     // Check for green letters
+    greenLetters = [];
+    green = [];
     for(var i = 0; i < Game.wordLength; i++){
         if(Game.guess[i] == Game.solution[i]){
             colors[i] = "green";
             solution = solution.replace(Game.guess[i], " ");
+            greenLetters.push({"letter": Game.guess[i], "index": i});
+            green.push(Game.guess[i]);
         }
     }
 
     // Check for yellow letters
+    grayLetters = [];
+    yellowLetters = [];
     for(var i = 0; i < Game.wordLength; i++){
         if(colors[i] != "green"){
             if(colors[i] != "green" && solution.includes(Game.guess[i])){
                 colors[i] = "yellow";
                 solution = solution.replace(Game.guess[i], " ");
+                yellowLetters.push({"letter": Game.guess[i], "index": i});
+                continue;
+            }
+            if(!green.includes(Game.guess[i])){
+                grayLetters.push({"letter": Game.guess[i], "index": i});
             }
         }
+    }
+
+    // Sieve out words from Game.wordsLeft
+    for(var i = Game.wordsLeft.length - 1; i >= 0; i--){
+        word = Game.wordsLeft[i];
+        fits = Game.wordFits(word, grayLetters, yellowLetters, greenLetters)
+        if(!fits) Game.wordsLeft.splice(i, 1);
     }
 
     for(var i = 0; i < Game.wordLength; i++){
@@ -132,7 +152,11 @@ Game.enter = function(){
         letterIndex = Game.letters.indexOf(Game.guess[i])
         key = document.getElementById(`key-${letterIndex}`);
         if(key.classList.contains("tile-green")) continue;
-        else{
+        else if(key.classList.contains("tile-yellow") && colors[i] != "gray"){
+            key.className = "";
+            key.classList.add("key");
+            key.classList.add(`tile-${colors[i]}`);
+        }else{
             key.className = "";
             key.classList.add("key");
             key.classList.add(`tile-${colors[i]}`);
@@ -151,6 +175,37 @@ Game.enter = function(){
     if(Game.guesses.length == 6) Game.endGame(false);
 };
 
+Game.wordFits = function(word, grayLetters, yellowLetters, greenLetters){
+    for(var i = 0; i < grayLetters.length; i++){
+        gray = grayLetters[i].letter;
+        if(word.includes(gray)) return false;
+    }
+    
+    greenIndexes = [];
+    for(var i = 0; i < greenLetters.length; i++){
+        green = greenLetters[i].letter;
+        index = greenLetters[i].index;
+        greenIndexes.push(index);
+        if(word[index] != green) return false;
+    }
+
+    for(var i = 0; i < yellowLetters.length; i++){
+        yellow = yellowLetters[i].letter;
+        index = yellowLetters[i].index;
+        found = false;
+        for(var j = 0; j < word.length; j++){
+            if(j == index || greenIndexes.includes(j) || word[j] != yellow) continue;
+            else{
+                found = true;
+                break;
+            }
+        }
+        if(!found) return false;
+    }
+
+    return true;
+}
+
 Game.pickSolution = function(){
     index = Math.floor(Math.random() * Dictionary.solution.length);
     Game.solution = Dictionary.solution[index];
@@ -167,12 +222,22 @@ Game.endGame = function(isWon){
         slots[0].innerHTML = `Ви відгадали слово за ${strings[Game.guesses.length - 1]}!`;
     }else slots[0].innerHTML = `Ви не відгадали слово за 6 спроб...`;
     slots[1].innerHTML = Game.solution;
+    slots[2].innerHTML = Dictionary.guess.length;
+    slots[3].innerHTML = Game.wordsLeft.length;
+    slots[4].innerHTML = `${Math.round(Game.score(isWon) * 100)}%`;
 };
+
+Game.score = function(isWon){
+    if(isWon) return 1 + 0.1 * (Game.guessCount - Game.guesses.length);
+    baseScore = 1 - Math.log2(Game.wordsLeft.length) / Math.log2(Dictionary.guess.length)
+    return Math.round(0.7 * Math.pow(baseScore, 2) * 100) / 100;
+}
 
 Game.reset = function(){
     Game.guess = "";
     Game.guesses = [];
     Game.isOver = false;
+    Game.wordsLeft = structuredClone(Dictionary.guess);
     Game.pickSolution();
 
     Game.board.innerHTML = "";
@@ -182,6 +247,5 @@ Game.reset = function(){
     Game.toggleResults();
 };
 
-Game.setUpBoard();
-Game.setUpKeyboard();
-Game.pickSolution();
+Game.toggleResults();
+Game.reset();
